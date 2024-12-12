@@ -70,3 +70,9 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+### Swagger docs
+
+To open docs from the docs/api.yaml file, follow this link http://localhost:4000/api/docs
+
+To open docs from local files, follow this link http://localhost:4000/api/docs-my
