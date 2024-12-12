@@ -39,6 +39,38 @@ export class TracksService {
     return artist;
   }
 
+  async removeAlbumForTracks(albumId: string): Promise<void> {
+    const allTracks = await this.getAll();
+    const promises = allTracks.reduce((res, el) => {
+      if (el.albumId === albumId) {
+        res.push(
+          this.update(el.id, {
+            ...el,
+            albumId: null,
+          }),
+        );
+      }
+      return res;
+    }, []);
+    Promise.all(promises);
+  }
+
+  async removeArtistForTracks(artistId: string): Promise<void> {
+    const allTracks = await this.getAll();
+    const promises = allTracks.reduce((res, el) => {
+      if (el.artistId === artistId) {
+        res.push(
+          this.update(el.id, {
+            ...el,
+            artistId: null,
+          }),
+        );
+      }
+      return res;
+    }, []);
+    Promise.all(promises);
+  }
+
   async update(id: string, dto: UpdateTrackDto): Promise<ITrack> {
     await this.getById(id);
     validateFields(dto);

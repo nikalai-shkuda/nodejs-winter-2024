@@ -1,4 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { AlbumsService } from 'src/albums/albums.service';
+import { TracksService } from 'src/tracks/tracks.service';
 import { ArtistRepository } from './artists.repository';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
@@ -15,7 +17,11 @@ const validateFields = (dto: CreateArtistDto): void => {
 
 @Injectable()
 export class ArtistsService {
-  constructor(private readonly artistRepository: ArtistRepository) {}
+  constructor(
+    private readonly artistRepository: ArtistRepository,
+    private readonly albumService: AlbumsService,
+    private readonly trackService: TracksService,
+  ) {}
 
   async create(dto: CreateArtistDto): Promise<IArtist> {
     validateFields(dto);
@@ -39,8 +45,9 @@ export class ArtistsService {
 
   async delete(id: string): Promise<void> {
     await this.getById(id);
-    const artist = await this.artistRepository.delete(id);
-    return artist;
+    await this.artistRepository.delete(id);
+    this.albumService.removeArtistForAlbums(id);
+    this.trackService.removeArtistForTracks(id);
   }
 
   async update(id: string, dto: UpdateArtistDto): Promise<IArtist> {

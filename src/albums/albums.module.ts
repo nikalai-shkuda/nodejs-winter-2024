@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { TracksModule } from 'src/tracks/tracks.module';
 import { AlbumsController } from './albums.controller';
 import { AlbumRepository } from './albums.repository';
 import { AlbumsService } from './albums.service';
@@ -9,5 +10,7 @@ import { AlbumsService } from './albums.service';
     AlbumsService,
     { provide: AlbumRepository, useClass: AlbumRepository },
   ],
+  imports: [TracksModule],
+  exports: [AlbumsService],
 })
 export class AlbumsModule {}
