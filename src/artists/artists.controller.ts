@@ -16,7 +16,7 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { IArtist } from './interfaces/artist.interface';
 
-@ApiTags('Artist')
+@ApiTags('Artists')
 @Controller('artist')
 export class ArtistsController {
   constructor(private artistService: ArtistsService) {}
@@ -24,7 +24,7 @@ export class ArtistsController {
   @ApiOperation({ summary: 'Create artist' })
   @ApiResponse({ status: HttpStatus.OK, type: Artist })
   @Post()
-  create(@Body() dto: CreateArtistDto): Promise<IArtist> {
+  createArtist(@Body() dto: CreateArtistDto): Promise<IArtist> {
     return this.artistService.create(dto);
   }
 
@@ -45,7 +45,7 @@ export class ArtistsController {
   @ApiOperation({ summary: 'Update artist' })
   @ApiResponse({ status: HttpStatus.OK, type: Artist })
   @Put(':id')
-  updatePassword(
+  updateArtist(
     @UUIDParam('id') id: string,
     @Body() dto: UpdateArtistDto,
   ): Promise<IArtist> {
@@ -56,7 +56,7 @@ export class ArtistsController {
   @ApiResponse({ status: HttpStatus.NO_CONTENT, type: null })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  deleteUser(@UUIDParam('id') id: string): Promise<void> {
+  deleteArtist(@UUIDParam('id') id: string): Promise<void> {
     return this.artistService.delete(id);
   }
 }

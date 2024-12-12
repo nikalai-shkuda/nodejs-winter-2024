@@ -7,7 +7,7 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 const validateFields = (dto: CreateAlbumDto): void => {
   if (typeof dto.year !== 'number' || typeof dto.name !== 'string') {
     throw new HttpException(
-      'Grammy and name are required',
+      'Name and year are required',
       HttpStatus.BAD_REQUEST,
     );
   }
@@ -29,10 +29,7 @@ export class AlbumsService {
   async getById(id: string): Promise<IAlbum> {
     const artist = this.albumRepository.getById(id);
     if (!artist) {
-      throw new HttpException(
-        'Artist has not been found',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('Album has not been found', HttpStatus.NOT_FOUND);
     }
     return artist;
   }

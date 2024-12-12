@@ -24,28 +24,28 @@ export class AlbumsController {
   @ApiOperation({ summary: 'Create album' })
   @ApiResponse({ status: HttpStatus.OK, type: Album })
   @Post()
-  create(@Body() dto: CreateAlbumDto): Promise<IAlbum> {
+  createAlbum(@Body() dto: CreateAlbumDto): Promise<IAlbum> {
     return this.albumService.create(dto);
   }
 
   @ApiOperation({ summary: 'Get albums' })
   @ApiResponse({ status: HttpStatus.OK, type: [Album] })
   @Get()
-  getArtists(): Promise<IAlbum[]> {
+  getAlbums(): Promise<IAlbum[]> {
     return this.albumService.getAll();
   }
 
   @ApiOperation({ summary: 'Get album' })
   @ApiResponse({ status: HttpStatus.OK, type: Album })
   @Get(':id')
-  getArtistById(@UUIDParam('id') id: string): Promise<IAlbum> {
+  getAlbumById(@UUIDParam('id') id: string): Promise<IAlbum> {
     return this.albumService.getById(id);
   }
 
   @ApiOperation({ summary: 'Update album' })
   @ApiResponse({ status: HttpStatus.OK, type: Album })
   @Put(':id')
-  updatePassword(
+  updateAlbum(
     @UUIDParam('id') id: string,
     @Body() dto: UpdateAlbumDto,
   ): Promise<IAlbum> {
@@ -56,7 +56,7 @@ export class AlbumsController {
   @ApiResponse({ status: HttpStatus.NO_CONTENT, type: null })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  deleteUser(@UUIDParam('id') id: string): Promise<void> {
+  deleteAlbum(@UUIDParam('id') id: string): Promise<void> {
     return this.albumService.delete(id);
   }
 }
