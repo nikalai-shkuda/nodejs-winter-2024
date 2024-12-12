@@ -1,12 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
-import { IUser } from './interfaces/user.interface';
-import { User } from './users.model';
+import { UserRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-  private users: IUser[] = [];
+  constructor(private readonly userRepository: UserRepository) {}
 
   async createUser(dto: CreateUserDto) {
     const isExistUser = await this.getUserByLogin(dto.login);
@@ -21,20 +20,16 @@ export class UsersService {
       );
     }
 
-    const user = new User({
-      login: dto.login,
-      password: dto.password,
-    });
-    this.users.push(user);
+    const user = this.userRepository.create(dto);
     return user;
   }
 
   async getAllUsers() {
-    return this.users;
+    return this.userRepository.getAll();
   }
 
   async getUserById(id: string) {
-    const user = this.users.find((user) => user.id === id);
+    const user = this.userRepository.getById(id);
     if (!user) {
       throw new HttpException('User has not been found', HttpStatus.NOT_FOUND);
     }
@@ -42,13 +37,13 @@ export class UsersService {
   }
 
   async getUserByLogin(login: string) {
-    const user = this.users.find((user) => user.login === login);
+    const user = this.userRepository.getByLogin(login);
     return user;
   }
 
   async deleteUser(id: string) {
-    const user = await this.getUserById(id);
-    this.users = this.users.filter((user) => user.id !== id);
+    await this.getUserById(id);
+    const user = await this.userRepository.delete(id);
     return user;
   }
 
@@ -63,18 +58,9 @@ export class UsersService {
       throw new HttpException('Wrong password', HttpStatus.FORBIDDEN);
     }
 
-    this.users = this.users.map((el) => {
-      if (el.id === id) {
-        return new User({
-          ...el,
-          password: dto.newPassword,
-          updatedAt: Date.now(),
-          version: el.version + 1,
-        });
-      }
-      return el;
+    const updatedUser = this.userRepository.update(id, {
+      password: dto.newPassword,
     });
-    const updatedUser = await this.getUserById(id);
     return updatedUser;
   }
 }
