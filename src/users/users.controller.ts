@@ -5,18 +5,15 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Param,
-  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UUIDParam } from 'src/common/helpers/request.decorators';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { User } from './users.model';
 import { UsersService } from './users.service';
-
-const UUIDParam = (name: string) => Param(name, new ParseUUIDPipe());
 
 @ApiTags('Users')
 @Controller('user')
