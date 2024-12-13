@@ -31,11 +31,11 @@ export class AlbumsService {
   }
 
   async getById(id: string): Promise<IAlbum> {
-    const artist = this.albumRepository.getById(id);
-    if (!artist) {
+    const album = this.albumRepository.getById(id);
+    if (!album) {
       throw new HttpException('Album has not been found', HttpStatus.NOT_FOUND);
     }
-    return artist;
+    return album;
   }
 
   async delete(id: string): Promise<void> {
@@ -63,7 +63,7 @@ export class AlbumsService {
   async update(id: string, dto: UpdateAlbumDto): Promise<IAlbum> {
     await this.getById(id);
     validateFields(dto);
-    const updatedArtist = this.albumRepository.update(id, dto);
-    return updatedArtist;
+    const updatedAlbum = this.albumRepository.update(id, dto);
+    return updatedAlbum;
   }
 }

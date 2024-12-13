@@ -26,17 +26,16 @@ export class TracksService {
   }
 
   async getById(id: string): Promise<ITrack> {
-    const artist = this.trackRepository.getById(id);
-    if (!artist) {
+    const track = this.trackRepository.getById(id);
+    if (!track) {
       throw new HttpException('Track has not been found', HttpStatus.NOT_FOUND);
     }
-    return artist;
+    return track;
   }
 
   async delete(id: string): Promise<void> {
     await this.getById(id);
-    const artist = await this.trackRepository.delete(id);
-    return artist;
+    this.trackRepository.delete(id);
   }
 
   async removeAlbumForTracks(albumId: string): Promise<void> {
@@ -74,7 +73,7 @@ export class TracksService {
   async update(id: string, dto: UpdateTrackDto): Promise<ITrack> {
     await this.getById(id);
     validateFields(dto);
-    const updatedArtist = this.trackRepository.update(id, dto);
-    return updatedArtist;
+    const updatedTrack = this.trackRepository.update(id, dto);
+    return updatedTrack;
   }
 }
