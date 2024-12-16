@@ -12,5 +12,6 @@ import { ArtistRepository } from './artists.repository';
     { provide: ArtistRepository, useClass: ArtistRepository },
   ],
   imports: [AlbumsModule, TracksModule],
+  exports: [ArtistsService],
 })
 export class ArtistsModule {}
