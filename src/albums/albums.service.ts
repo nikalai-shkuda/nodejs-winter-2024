@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { errorMessages } from 'src/common/constants';
 import { TracksService } from 'src/tracks/tracks.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { AlbumRepository } from './albums.repository';
@@ -7,10 +12,7 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 
 const validateFields = (dto: CreateAlbumDto): void => {
   if (typeof dto.year !== 'number' || typeof dto.name !== 'string') {
-    throw new HttpException(
-      'Name and year are required',
-      HttpStatus.BAD_REQUEST,
-    );
+    throw new BadRequestException(errorMessages.ALBUM_REQUIRED_PARAM);
   }
 };
 
@@ -33,7 +35,7 @@ export class AlbumsService {
   async getById(id: string): Promise<IAlbum> {
     const album = this.albumRepository.getById(id);
     if (!album) {
-      throw new HttpException('Album has not been found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException(errorMessages.ALBUM_NOT_FOUND);
     }
     return album;
   }

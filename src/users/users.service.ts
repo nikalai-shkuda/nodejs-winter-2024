@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { errorMessages } from 'src/common/constants';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { UserRepository } from './users.repository';
@@ -10,14 +16,11 @@ export class UsersService {
   async createUser(dto: CreateUserDto) {
     const isExistUser = await this.getUserByLogin(dto.login);
     if (isExistUser) {
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+      throw new BadRequestException(errorMessages.USER_ALREADY_EXISTS);
     }
 
     if (!dto.login || !dto.password) {
-      throw new HttpException(
-        'Login and password are required',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException(errorMessages.USER_REQUIRED_PARAM);
     }
 
     const user = this.userRepository.create(dto);
@@ -31,7 +34,7 @@ export class UsersService {
   async getUserById(id: string) {
     const user = this.userRepository.getById(id);
     if (!user) {
-      throw new HttpException('User has not been found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException(errorMessages.USER_NOT_FOUND);
     }
     return user;
   }
@@ -49,13 +52,13 @@ export class UsersService {
 
   async updatePassword(id: string, dto: UpdatePasswordDto) {
     if (!dto.oldPassword || !dto.newPassword) {
-      throw new HttpException('Password are required', HttpStatus.BAD_REQUEST);
+      throw new BadRequestException(errorMessages.USER_REQUIRED_PARAM);
     }
 
     const user = await this.getUserById(id);
     const isEqualPasswords = user.password === dto.oldPassword;
     if (!isEqualPasswords) {
-      throw new HttpException('Wrong password', HttpStatus.FORBIDDEN);
+      throw new ForbiddenException(errorMessages.USER_WRONG_PASSWORD);
     }
 
     const updatedUser = this.userRepository.update(id, {

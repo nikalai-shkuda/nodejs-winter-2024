@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { randomUUID } from 'src/common/constants';
 
 export class UpdateAlbumDto {
   @ApiProperty({
-    example: '1eb16247-1f1b-4a69-a48b-9b44db773516',
+    example: randomUUID,
     description: 'Artist ID',
   })
   readonly artistId?: string | null;

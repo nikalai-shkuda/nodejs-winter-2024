@@ -1,22 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 import * as uuid from 'uuid';
+import { randomUUID } from 'src/common/constants';
 import { ITrack } from './interfaces/track.interface';
 
 export class Track implements ITrack {
   @ApiProperty({
-    example: '1eb16247-1f1b-4a69-a48b-9b44db773516',
+    example: randomUUID,
     description: 'ID',
   })
   readonly id: string = uuid.v4();
 
   @ApiProperty({
-    example: '1eb16247-1f1b-4a69-a48b-9b44db773516',
+    example: randomUUID,
     description: 'Album ID',
   })
   readonly albumId?: string | null = null;
 
   @ApiProperty({
-    example: '1eb16247-1f1b-4a69-a48b-9b44db773516',
+    example: randomUUID,
     description: 'Artist ID',
   })
   readonly artistId?: string | null = null;

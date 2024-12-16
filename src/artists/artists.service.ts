@@ -1,5 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { AlbumsService } from 'src/albums/albums.service';
+import { errorMessages } from 'src/common/constants';
 import { TracksService } from 'src/tracks/tracks.service';
 import { ArtistRepository } from './artists.repository';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -8,10 +13,7 @@ import { IArtist } from './interfaces/artist.interface';
 
 const validateFields = (dto: CreateArtistDto): void => {
   if (typeof dto.grammy !== 'boolean' || typeof dto.name !== 'string') {
-    throw new HttpException(
-      'Grammy and name are required',
-      HttpStatus.BAD_REQUEST,
-    );
+    throw new BadRequestException(errorMessages.ARTIST_REQUIRED_PARAM);
   }
 };
 
@@ -35,10 +37,7 @@ export class ArtistsService {
   async getById(id: string): Promise<IArtist> {
     const artist = this.artistRepository.getById(id);
     if (!artist) {
-      throw new HttpException(
-        'Artist has not been found',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException(errorMessages.ARTIST_NOT_FOUND);
     }
     return artist;
   }

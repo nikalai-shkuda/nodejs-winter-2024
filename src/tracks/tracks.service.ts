@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { errorMessages } from 'src/common/constants';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { TrackRepository } from './tracks.repository';
 import { ITrack } from './interfaces/track.interface';
@@ -6,10 +11,7 @@ import { UpdateTrackDto } from './dto/update-track.dto';
 
 const validateFields = (dto: CreateTrackDto): void => {
   if (typeof dto.duration !== 'number' || typeof dto.name !== 'string') {
-    throw new HttpException(
-      'Duration and name are required',
-      HttpStatus.BAD_REQUEST,
-    );
+    throw new BadRequestException(errorMessages.TRACK_REQUIRED_PARAM);
   }
 };
 @Injectable()
@@ -28,7 +30,7 @@ export class TracksService {
   async getById(id: string): Promise<ITrack> {
     const track = this.trackRepository.getById(id);
     if (!track) {
-      throw new HttpException('Track has not been found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException(errorMessages.TRACK_NOT_FOUND);
     }
     return track;
   }

@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import * as uuid from 'uuid';
+import { randomUUID } from 'src/common/constants';
 import { IArtist } from './interfaces/artist.interface';
 
 export class Artist implements IArtist {
   @ApiProperty({
-    example: '1eb16247-1f1b-4a69-a48b-9b44db773516',
+    example: randomUUID,
     description: 'ID',
   })
   readonly id: string = uuid.v4();

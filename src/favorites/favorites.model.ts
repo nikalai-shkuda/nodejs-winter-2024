@@ -1,21 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { randomUUID } from 'src/common/constants';
 import { IFavorites } from './interfaces/favorites.interface';
 
 export class Favorites implements IFavorites {
   @ApiProperty({
-    example: ['1eb16247-1f1b-4a69-a48b-9b44db773516'],
+    example: [randomUUID],
     description: 'Albums ID',
   })
   readonly albums: string[] = [];
 
   @ApiProperty({
-    example: ['1eb16247-1f1b-4a69-a48b-9b44db773516'],
+    example: [randomUUID],
     description: 'Artists ID',
   })
   readonly artists: string[] = [];
 
   @ApiProperty({
-    example: ['1eb16247-1f1b-4a69-a48b-9b44db773516'],
+    example: [randomUUID],
     description: 'Tracks ID',
   })
   readonly tracks: string[] = [];

@@ -1,8 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { Album } from 'src/albums/albums.model';
 import { AlbumsService } from 'src/albums/albums.service';
 import { Artist } from 'src/artists/artists.model';
 import { ArtistsService } from 'src/artists/artists.service';
+import { errorMessages } from 'src/common/constants';
 import { Track } from 'src/tracks/tracks.model';
 import { TracksService } from 'src/tracks/tracks.service';
 import { FavoritesRepository } from './favorites.repository';
@@ -53,10 +54,7 @@ export class FavoritesService {
       return this.favoritesRepository.addAlbum(id);
     } catch (e) {
       console.error(e);
-      throw new HttpException(
-        'Album has not been found',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new UnprocessableEntityException(errorMessages.ALBUM_NOT_FOUND);
     }
   }
 
@@ -66,10 +64,7 @@ export class FavoritesService {
       return this.favoritesRepository.removeAlbum(id);
     } catch (e) {
       console.error(e);
-      throw new HttpException(
-        'Album has not been found',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new UnprocessableEntityException(errorMessages.ALBUM_NOT_FOUND);
     }
   }
 
@@ -79,10 +74,7 @@ export class FavoritesService {
       return this.favoritesRepository.addArtist(id);
     } catch (e) {
       console.error(e);
-      throw new HttpException(
-        'Artist has not been found',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new UnprocessableEntityException(errorMessages.ARTIST_NOT_FOUND);
     }
   }
 
@@ -92,10 +84,7 @@ export class FavoritesService {
       return this.favoritesRepository.removeArtist(id);
     } catch (e) {
       console.error(e);
-      throw new HttpException(
-        'Artist has not been found',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new UnprocessableEntityException(errorMessages.ARTIST_NOT_FOUND);
     }
   }
 
@@ -105,10 +94,7 @@ export class FavoritesService {
       return this.favoritesRepository.addTrack(id);
     } catch (e) {
       console.error(e);
-      throw new HttpException(
-        'Track has not been found',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new UnprocessableEntityException(errorMessages.TRACK_NOT_FOUND);
     }
   }
 
@@ -118,7 +104,7 @@ export class FavoritesService {
       return this.favoritesRepository.removeTrack(id);
     } catch (e) {
       console.error(e);
-      throw new HttpException('Track has not been found', HttpStatus.NOT_FOUND);
+      throw new UnprocessableEntityException(errorMessages.TRACK_NOT_FOUND);
     }
   }
 }
