@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { AlbumsService } from 'src/albums/albums.service';
 import { errorMessages } from 'src/common/constants';
 import { TracksService } from 'src/tracks/tracks.service';
@@ -10,12 +6,6 @@ import { ArtistRepository } from './artists.repository';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { IArtist } from './interfaces/artist.interface';
-
-const validateFields = (dto: CreateArtistDto): void => {
-  if (typeof dto.grammy !== 'boolean' || typeof dto.name !== 'string') {
-    throw new BadRequestException(errorMessages.ARTIST_REQUIRED_PARAM);
-  }
-};
 
 @Injectable()
 export class ArtistsService {
@@ -26,7 +16,6 @@ export class ArtistsService {
   ) {}
 
   async create(dto: CreateArtistDto): Promise<IArtist> {
-    validateFields(dto);
     return this.artistRepository.create(dto);
   }
 
@@ -51,7 +40,6 @@ export class ArtistsService {
 
   async update(id: string, dto: UpdateArtistDto): Promise<IArtist> {
     await this.getById(id);
-    validateFields(dto);
     const updatedArtist = this.artistRepository.update(id, dto);
     return updatedArtist;
   }

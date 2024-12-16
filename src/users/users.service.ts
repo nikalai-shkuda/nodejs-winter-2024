@@ -19,10 +19,6 @@ export class UsersService {
       throw new BadRequestException(errorMessages.USER_ALREADY_EXISTS);
     }
 
-    if (!dto.login || !dto.password) {
-      throw new BadRequestException(errorMessages.USER_REQUIRED_PARAM);
-    }
-
     const user = this.userRepository.create(dto);
     return user;
   }
@@ -51,10 +47,6 @@ export class UsersService {
   }
 
   async updatePassword(id: string, dto: UpdatePasswordDto) {
-    if (!dto.oldPassword || !dto.newPassword) {
-      throw new BadRequestException(errorMessages.USER_REQUIRED_PARAM);
-    }
-
     const user = await this.getUserById(id);
     const isEqualPasswords = user.password === dto.oldPassword;
     if (!isEqualPasswords) {

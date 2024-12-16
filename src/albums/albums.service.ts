@@ -1,20 +1,10 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { errorMessages } from 'src/common/constants';
 import { TracksService } from 'src/tracks/tracks.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { AlbumRepository } from './albums.repository';
 import { IAlbum } from './interfaces/album.interface';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-
-const validateFields = (dto: CreateAlbumDto): void => {
-  if (typeof dto.year !== 'number' || typeof dto.name !== 'string') {
-    throw new BadRequestException(errorMessages.ALBUM_REQUIRED_PARAM);
-  }
-};
 
 @Injectable()
 export class AlbumsService {
@@ -24,7 +14,6 @@ export class AlbumsService {
   ) {}
 
   async create(dto: CreateAlbumDto): Promise<IAlbum> {
-    validateFields(dto);
     return this.albumRepository.create(dto);
   }
 
@@ -64,7 +53,6 @@ export class AlbumsService {
 
   async update(id: string, dto: UpdateAlbumDto): Promise<IAlbum> {
     await this.getById(id);
-    validateFields(dto);
     const updatedAlbum = this.albumRepository.update(id, dto);
     return updatedAlbum;
   }

@@ -1,25 +1,15 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { errorMessages } from 'src/common/constants';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { TrackRepository } from './tracks.repository';
 import { ITrack } from './interfaces/track.interface';
 import { UpdateTrackDto } from './dto/update-track.dto';
 
-const validateFields = (dto: CreateTrackDto): void => {
-  if (typeof dto.duration !== 'number' || typeof dto.name !== 'string') {
-    throw new BadRequestException(errorMessages.TRACK_REQUIRED_PARAM);
-  }
-};
 @Injectable()
 export class TracksService {
   constructor(private readonly trackRepository: TrackRepository) {}
 
   async create(dto: CreateTrackDto): Promise<ITrack> {
-    validateFields(dto);
     return this.trackRepository.create(dto);
   }
 
@@ -74,7 +64,6 @@ export class TracksService {
 
   async update(id: string, dto: UpdateTrackDto): Promise<ITrack> {
     await this.getById(id);
-    validateFields(dto);
     const updatedTrack = this.trackRepository.update(id, dto);
     return updatedTrack;
   }

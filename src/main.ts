@@ -6,6 +6,7 @@ import * as swaggerUi from 'swagger-ui-express';
 import * as yaml from 'yaml';
 import * as path from 'path';
 import { AppModule } from './app.module';
+import { ValidationPipe } from './common/pipes/validation.pipe';
 
 async function bootstrap() {
   const PORT = process.env.PORT || 4000;
@@ -26,6 +27,8 @@ async function bootstrap() {
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(PORT, () =>
     console.log('Server is running on port: ' + PORT, process.env.NODE_ENV),
