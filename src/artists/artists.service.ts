@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AlbumsService } from 'src/albums/albums.service';
 import { errorMessages } from 'src/common/constants';
 import { TracksService } from 'src/tracks/tracks.service';
 import { Artist } from './artists.model';
@@ -13,7 +12,6 @@ export class ArtistsService {
   constructor(
     @InjectRepository(Artist)
     private artistRepository: Repository<Artist>,
-    private readonly albumService: AlbumsService,
     private readonly trackService: TracksService,
   ) {}
 
@@ -37,7 +35,6 @@ export class ArtistsService {
   async delete(id: string): Promise<void> {
     await this.getById(id);
     await this.artistRepository.delete(id);
-    this.albumService.removeArtistForAlbums(id);
     this.trackService.removeArtistForTracks(id);
   }
 
