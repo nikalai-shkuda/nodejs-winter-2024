@@ -1,30 +1,33 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { AlbumsService } from 'src/albums/albums.service';
 import { errorMessages } from 'src/common/constants';
 import { TracksService } from 'src/tracks/tracks.service';
-import { ArtistRepository } from './artists.repository';
+import { Artist } from './artists.model';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { IArtist } from './interfaces/artist.interface';
 
 @Injectable()
 export class ArtistsService {
   constructor(
-    private readonly artistRepository: ArtistRepository,
+    @InjectRepository(Artist)
+    private artistRepository: Repository<Artist>,
     private readonly albumService: AlbumsService,
     private readonly trackService: TracksService,
   ) {}
 
-  async create(dto: CreateArtistDto): Promise<IArtist> {
-    return this.artistRepository.create(dto);
+  async create(dto: CreateArtistDto): Promise<Artist> {
+    const artist = this.artistRepository.create(dto);
+    return this.artistRepository.save(artist);
   }
 
-  async getAll(): Promise<IArtist[]> {
-    return this.artistRepository.getAll();
+  async getAll(): Promise<Artist[]> {
+    return this.artistRepository.find();
   }
 
-  async getById(id: string): Promise<IArtist> {
-    const artist = this.artistRepository.getById(id);
+  async getById(id: string): Promise<Artist> {
+    const artist = await this.artistRepository.findOneBy({ id });
     if (!artist) {
       throw new NotFoundException(errorMessages.ARTIST_NOT_FOUND);
     }
@@ -38,9 +41,9 @@ export class ArtistsService {
     this.trackService.removeArtistForTracks(id);
   }
 
-  async update(id: string, dto: UpdateArtistDto): Promise<IArtist> {
+  async update(id: string, dto: UpdateArtistDto): Promise<Artist> {
     await this.getById(id);
-    const updatedArtist = this.artistRepository.update(id, dto);
-    return updatedArtist;
+    await this.artistRepository.update(id, dto);
+    return this.getById(id);
   }
 }
