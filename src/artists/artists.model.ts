@@ -3,6 +3,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import * as uuid from 'uuid';
 import { Album } from 'src/albums/albums.model';
 import { randomUUID } from 'src/common/constants';
+import { Track } from 'src/tracks/tracks.model';
 import { IArtist } from './interfaces/artist.interface';
 
 @Entity('artists')
@@ -24,6 +25,9 @@ export class Artist implements IArtist {
 
   @OneToMany(() => Album, (album) => album, { cascade: true })
   albums: Album[];
+
+  @OneToMany(() => Track, (track) => track, { cascade: true })
+  tracks: Track[];
 
   constructor(partial: Partial<Artist>) {
     Object.assign(this, partial);

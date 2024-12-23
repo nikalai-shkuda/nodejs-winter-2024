@@ -3,12 +3,14 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import * as uuid from 'uuid';
 import { Artist } from 'src/artists/artists.model';
 import { randomUUID } from 'src/common/constants';
+import { Track } from 'src/tracks/tracks.model';
 import { IAlbum } from './interfaces/album.interface';
 
 @Entity('albums')
@@ -19,6 +21,13 @@ export class Album implements IAlbum {
     description: 'ID',
   })
   readonly id: string = uuid.v4();
+
+  @ManyToOne(() => Artist, (artist) => artist, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'artistId' })
+  artist: Artist | null;
 
   @Column({ nullable: true })
   @ApiProperty({
@@ -35,12 +44,8 @@ export class Album implements IAlbum {
   @ApiProperty({ example: 2024, description: 'Year' })
   readonly year: number;
 
-  @ManyToOne(() => Artist, (artist) => artist, {
-    nullable: true,
-    onDelete: 'SET NULL',
-  })
-  @JoinColumn({ name: 'artistId' })
-  artist: Artist | null;
+  @OneToMany(() => Track, (track) => track, { cascade: true })
+  tracks: Track[];
 
   constructor(partial: Partial<Album>) {
     Object.assign(this, partial);
