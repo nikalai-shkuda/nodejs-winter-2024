@@ -6,6 +6,7 @@ import { DataSource } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AlbumsModule } from './albums/albums.module';
+import { Album } from './albums/albums.model';
 import { Artist } from './artists/artists.model';
 import { ArtistsModule } from './artists/artists.module';
 import { FavoritesModule } from './favorites/favorites.module';
@@ -28,7 +29,7 @@ import { UsersModule } from './users/users.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [Artist, User],
+      entities: [Album, Artist, User],
       logging: true,
       synchronize: process.env.NODE_ENV === 'development' ? true : false,
     }),
