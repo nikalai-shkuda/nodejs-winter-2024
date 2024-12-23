@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { errorMessages } from 'src/common/constants';
-import { TracksService } from 'src/tracks/tracks.service';
 import { Album } from './albums.model';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -12,7 +11,6 @@ export class AlbumsService {
   constructor(
     @InjectRepository(Album)
     private readonly albumRepository: Repository<Album>,
-    private readonly trackService: TracksService,
   ) {}
 
   async create(dto: CreateAlbumDto): Promise<Album> {
@@ -35,7 +33,6 @@ export class AlbumsService {
   async delete(id: string): Promise<void> {
     await this.getById(id);
     await this.albumRepository.delete(id);
-    this.trackService.removeAlbumForTracks(id);
   }
 
   async update(id: string, dto: UpdateAlbumDto): Promise<Album> {

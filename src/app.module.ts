@@ -10,6 +10,7 @@ import { Album } from './albums/albums.model';
 import { Artist } from './artists/artists.model';
 import { ArtistsModule } from './artists/artists.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { Track } from './tracks/tracks.model';
 import { TracksModule } from './tracks/tracks.module';
 import { User } from './users/users.model';
 import { UsersModule } from './users/users.module';
@@ -29,7 +30,7 @@ import { UsersModule } from './users/users.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [Album, Artist, User],
+      entities: [Album, Artist, Track, User],
       logging: true,
       synchronize: process.env.NODE_ENV === 'development' ? true : false,
     }),
