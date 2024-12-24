@@ -23,10 +23,10 @@ export class Artist implements IArtist {
   @ApiProperty({ example: 'Queen', description: 'Name' })
   readonly name: string;
 
-  @OneToMany(() => Album, (album) => album, { cascade: true })
+  @OneToMany(() => Album, (album) => album.artist, { cascade: true })
   albums: Album[];
 
-  @OneToMany(() => Track, (track) => track, { cascade: true })
+  @OneToMany(() => Track, (track) => track.artist, { cascade: true })
   tracks: Track[];
 
   constructor(partial: Partial<Artist>) {

@@ -22,7 +22,7 @@ export class Album implements IAlbum {
   })
   readonly id: string = uuid.v4();
 
-  @ManyToOne(() => Artist, (artist) => artist, {
+  @ManyToOne(() => Artist, (artist) => artist.albums, {
     nullable: true,
     onDelete: 'SET NULL',
   })
@@ -44,7 +44,7 @@ export class Album implements IAlbum {
   @ApiProperty({ example: 2024, description: 'Year' })
   readonly year: number;
 
-  @OneToMany(() => Track, (track) => track, { cascade: true })
+  @OneToMany(() => Track, (track) => track.album, { cascade: true })
   tracks: Track[];
 
   constructor(partial: Partial<Album>) {
