@@ -21,7 +21,7 @@ export class Track implements ITrack {
   })
   readonly id: string = uuid.v4();
 
-  @ManyToOne(() => Album, (album) => album, {
+  @ManyToOne(() => Album, (album) => album.tracks, {
     nullable: true,
     onDelete: 'SET NULL',
   })
@@ -35,7 +35,7 @@ export class Track implements ITrack {
   })
   readonly albumId?: string | null = null;
 
-  @ManyToOne(() => Artist, (artist) => artist, {
+  @ManyToOne(() => Artist, (artist) => artist.tracks, {
     nullable: true,
     onDelete: 'SET NULL',
   })
