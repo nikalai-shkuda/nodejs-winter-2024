@@ -8,7 +8,12 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UUIDParam } from 'src/common/helpers/request.decorators';
 import { Album } from './albums.model';
 import { AlbumsService } from './albums.service';
@@ -22,7 +27,7 @@ export class AlbumsController {
   constructor(private albumService: AlbumsService) {}
 
   @ApiOperation({ summary: 'Create album' })
-  @ApiResponse({ status: HttpStatus.OK, type: Album })
+  @ApiCreatedResponse({ type: Album })
   @Post()
   createAlbum(@Body() dto: CreateAlbumDto): Promise<IAlbum> {
     return this.albumService.create(dto);

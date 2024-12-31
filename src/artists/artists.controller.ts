@@ -8,7 +8,12 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UUIDParam } from 'src/common/helpers/request.decorators';
 import { Artist } from './artists.model';
 import { ArtistsService } from './artists.service';
@@ -22,7 +27,7 @@ export class ArtistsController {
   constructor(private artistService: ArtistsService) {}
 
   @ApiOperation({ summary: 'Create artist' })
-  @ApiResponse({ status: HttpStatus.OK, type: Artist })
+  @ApiCreatedResponse({ type: Artist })
   @Post()
   createArtist(@Body() dto: CreateArtistDto): Promise<IArtist> {
     return this.artistService.create(dto);

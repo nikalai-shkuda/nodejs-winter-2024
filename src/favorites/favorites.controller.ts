@@ -21,6 +21,7 @@ import { UUIDParam } from 'src/common/helpers/request.decorators';
 import { Favorites } from './favorites.model';
 import { FavoritesService } from './favorites.service';
 import { IFavoritesResponse } from './interfaces/favorites.interface';
+import { favoritesExample } from './mock/open.api';
 
 @ApiTags('Favorites')
 @Controller('favs')
@@ -28,7 +29,11 @@ export class FavoritesController {
   constructor(private favoritesService: FavoritesService) {}
 
   @ApiOperation({ summary: 'Get all favorites' })
-  @ApiResponse({ status: HttpStatus.OK, type: [Favorites] })
+  @ApiResponse({
+    example: favoritesExample,
+    status: HttpStatus.OK,
+    type: [Favorites],
+  })
   @Get()
   getAll(): Promise<IFavoritesResponse> {
     return this.favoritesService.getAll();

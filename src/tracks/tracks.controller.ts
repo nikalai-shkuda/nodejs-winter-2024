@@ -8,7 +8,12 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UUIDParam } from 'src/common/helpers/request.decorators';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
@@ -22,7 +27,7 @@ export class TracksController {
   constructor(private trackService: TracksService) {}
 
   @ApiOperation({ summary: 'Create track' })
-  @ApiResponse({ status: HttpStatus.OK, type: Track })
+  @ApiCreatedResponse({ type: Track })
   @Post()
   createTrack(@Body() dto: CreateTrackDto): Promise<ITrack> {
     return this.trackService.create(dto);

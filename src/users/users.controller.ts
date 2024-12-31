@@ -8,10 +8,16 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UUIDParam } from 'src/common/helpers/request.decorators';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
+import { userExample } from './mock/open.api';
 import { User } from './users.model';
 import { UsersService } from './users.service';
 
@@ -21,28 +27,28 @@ export class UsersController {
   constructor(private userService: UsersService) {}
 
   @ApiOperation({ summary: 'Create user' })
-  @ApiResponse({ status: HttpStatus.OK, type: User })
+  @ApiCreatedResponse({ example: userExample, type: User })
   @Post()
   create(@Body() userDto: CreateUserDto) {
     return this.userService.createUser(userDto);
   }
 
   @ApiOperation({ summary: 'Get users' })
-  @ApiResponse({ status: HttpStatus.OK, type: [User] })
+  @ApiResponse({ example: userExample, status: HttpStatus.OK, type: [User] })
   @Get()
   getUsers() {
     return this.userService.getAllUsers();
   }
 
   @ApiOperation({ summary: 'Get user' })
-  @ApiResponse({ status: HttpStatus.OK, type: User })
+  @ApiResponse({ example: userExample, status: HttpStatus.OK, type: User })
   @Get(':id')
   getUserById(@UUIDParam('id') id: string) {
     return this.userService.getUserById(id);
   }
 
   @ApiOperation({ summary: 'Update user password' })
-  @ApiResponse({ status: HttpStatus.OK, type: User })
+  @ApiResponse({ example: userExample, status: HttpStatus.OK, type: User })
   @Put(':id')
   updatePassword(
     @UUIDParam('id') id: string,
