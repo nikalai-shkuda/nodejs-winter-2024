@@ -17,6 +17,21 @@ git clone {repository URL}
 npm install
 ```
 
+## Database migrations
+
+Before starting the application for the first time, execute the database migrations.
+
+```
+npm run migration:migrate
+```
+
+If you change some fields in DB, run generation migration and after run prev command.
+Migration generation will create new migration file, based on current state of your DB.
+
+```
+npm run migration:generate
+```
+
 ## Running application
 
 ```

@@ -7,28 +7,25 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AlbumsModule } from './albums/albums.module';
 import { ArtistsModule } from './artists/artists.module';
+import { ENV_PATH } from './common/constants';
+import { DB_CONNECTION_OPTIONS } from './db.connection';
 import { FavoritesModule } from './favorites/favorites.module';
 import { TracksModule } from './tracks/tracks.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: `.env.${process.env.NODE_ENV}` }),
+    ConfigModule.forRoot({
+      envFilePath: ENV_PATH,
+      isGlobal: true,
+    }),
     AlbumsModule,
     ArtistsModule,
     FavoritesModule,
     TracksModule,
     UsersModule,
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.POSTGRES_HOST,
-      port: Number(process.env.POSTGRES_PORT),
-      username: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DB,
-      entities: [__dirname + '/**/*.model{.ts,.js}'],
-      logging: true,
-      synchronize: process.env.NODE_ENV === 'development' ? true : false,
+      ...DB_CONNECTION_OPTIONS,
     }),
   ],
   controllers: [AppController],
