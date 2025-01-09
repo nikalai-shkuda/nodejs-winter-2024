@@ -38,6 +38,12 @@ npm run migration:generate
 npm start
 ```
 
+Running development server in docker container:
+
+```
+docker compose up
+```
+
 ### Swagger docs
 
 After starting the app on port (4000 as default) you can open
