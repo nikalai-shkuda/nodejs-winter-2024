@@ -10,8 +10,8 @@ services:
       - ./src:/app/src
       - /app/node_modules
     ports:
-      - 5050:5050
-    command:  npm run start:migrate:dev
+      - 4000:5050
+    command: npm run start:migrate:dev
     depends_on:
       - db
     networks:
@@ -20,10 +20,13 @@ services:
 
   db:
     container_name: db
-    image: postgres:16
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     env_file:
       - .env.docker
     ports:
+      - 5433:5432
       - 5432:5432
     volumes:
       - pg_data:/var/lib/postgresql/data
@@ -35,6 +38,7 @@ services:
 volumes:
   pg_data:
   pg_logs:
+
 
 networks:
   app_network:
