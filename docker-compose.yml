@@ -11,6 +11,7 @@ services:
       - /app/node_modules
     ports:
       - 4000:5050
+      - 9229:9229
     command: npm run start:migrate:dev
     depends_on:
       - db
