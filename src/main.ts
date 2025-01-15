@@ -35,6 +35,20 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
+  process
+    .on('uncaughtException', (error: Error) => {
+      logger.error(
+        `Uncaught Exception: ${error?.message || error}`,
+        error?.stack || '',
+      );
+    })
+    .on('unhandledRejection', (error: Error) => {
+      logger.error(
+        `Unhandled Rejection: ${error?.message || error}`,
+        error?.stack || '',
+      );
+    });
+
   await app.listen(PORT, () => {
     const log = `Server is running on port: ${PORT}; NODE_ENV: ${process.env.NODE_ENV}`;
     logger.log(log);
