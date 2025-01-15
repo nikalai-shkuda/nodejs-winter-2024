@@ -17,10 +17,39 @@ git clone {repository URL}
 npm install
 ```
 
+## Database migrations
+
+Before starting the application for the first time, execute the database migrations.
+
+```
+npm run migration:migrate
+```
+
+If you change some fields in DB, run generation migration and after run prev command.
+Migration generation will create new migration file, based on current state of your DB.
+
+```
+npm run migration:generate
+```
+
 ## Running application
 
 ```
 npm start
+```
+
+## Docker
+
+Run application
+
+```
+docker compose up
+```
+
+Scan docker images for vulnerabilities
+
+```
+npm run scan
 ```
 
 ### Swagger docs
@@ -38,35 +67,47 @@ After application running open new terminal and enter:
 To run all tests without authorization
 
 ```
+
 npm run test
+
 ```
 
 To run only one of all test suites
 
 ```
+
 npm run test -- <path to suite>
+
 ```
 
 To run all test with authorization
 
 ```
+
 npm run test:auth
+
 ```
 
 To run only specific test suite with authorization
 
 ```
+
 npm run test:auth -- <path to suite>
+
 ```
 
 ### Auto-fix and format
 
 ```
+
 npm run lint
+
 ```
 
 ```
+
 npm run format
+
 ```
 
 ### Debugging in VSCode
@@ -74,3 +115,7 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+```
+
+```

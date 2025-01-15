@@ -4,14 +4,19 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { errorMessages } from 'src/common/constants';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
-import { UserRepository } from './users.repository';
+import { User } from './users.model';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
 
   async createUser(dto: CreateUserDto) {
     const isExistUser = await this.getUserByLogin(dto.login);
@@ -19,16 +24,19 @@ export class UsersService {
       throw new BadRequestException(errorMessages.USER_ALREADY_EXISTS);
     }
 
-    const user = this.userRepository.create(dto);
-    return user;
+    const user = this.userRepository.create({
+      login: dto.login,
+      password: dto.password,
+    });
+    return this.userRepository.save(user);
   }
 
   async getAllUsers() {
-    return this.userRepository.getAll();
+    return this.userRepository.find();
   }
 
   async getUserById(id: string) {
-    const user = this.userRepository.getById(id);
+    const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new NotFoundException(errorMessages.USER_NOT_FOUND);
     }
@@ -36,14 +44,17 @@ export class UsersService {
   }
 
   async getUserByLogin(login: string) {
-    const user = this.userRepository.getByLogin(login);
+    const user = await this.userRepository.findOne({
+      where: {
+        login,
+      },
+    });
     return user;
   }
 
   async deleteUser(id: string) {
     await this.getUserById(id);
-    const user = await this.userRepository.delete(id);
-    return user;
+    this.userRepository.delete(id);
   }
 
   async updatePassword(id: string, dto: UpdatePasswordDto) {
@@ -53,9 +64,11 @@ export class UsersService {
       throw new ForbiddenException(errorMessages.USER_WRONG_PASSWORD);
     }
 
-    const updatedUser = this.userRepository.update(id, {
+    await this.userRepository.update(id, {
       password: dto.newPassword,
+      updatedAt: Date.now(),
+      version: user.version + 1,
     });
-    return updatedUser;
+    return this.getUserById(id);
   }
 }

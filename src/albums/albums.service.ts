@@ -1,28 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { errorMessages } from 'src/common/constants';
-import { TracksService } from 'src/tracks/tracks.service';
+import { Album } from './albums.model';
 import { CreateAlbumDto } from './dto/create-album.dto';
-import { AlbumRepository } from './albums.repository';
-import { IAlbum } from './interfaces/album.interface';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 
 @Injectable()
 export class AlbumsService {
   constructor(
-    private readonly albumRepository: AlbumRepository,
-    private readonly trackService: TracksService,
+    @InjectRepository(Album)
+    private readonly albumRepository: Repository<Album>,
   ) {}
 
-  async create(dto: CreateAlbumDto): Promise<IAlbum> {
-    return this.albumRepository.create(dto);
+  async create(dto: CreateAlbumDto): Promise<Album> {
+    const album = this.albumRepository.create(dto);
+    return this.albumRepository.save(album);
   }
 
-  async getAll(): Promise<IAlbum[]> {
-    return this.albumRepository.getAll();
+  async getAll(): Promise<Album[]> {
+    return this.albumRepository.find();
   }
 
-  async getById(id: string): Promise<IAlbum> {
-    const album = this.albumRepository.getById(id);
+  async getById(id: string): Promise<Album> {
+    const album = await this.albumRepository.findOneBy({ id });
     if (!album) {
       throw new NotFoundException(errorMessages.ALBUM_NOT_FOUND);
     }
@@ -32,28 +33,11 @@ export class AlbumsService {
   async delete(id: string): Promise<void> {
     await this.getById(id);
     await this.albumRepository.delete(id);
-    this.trackService.removeAlbumForTracks(id);
   }
 
-  async removeArtistForAlbums(artistId: string): Promise<void> {
-    const allAlbums = await this.getAll();
-    const promises = allAlbums.reduce((res, el) => {
-      if (el.artistId === artistId) {
-        res.push(
-          this.update(el.id, {
-            ...el,
-            artistId: null,
-          }),
-        );
-      }
-      return res;
-    }, []);
-    Promise.all(promises);
-  }
-
-  async update(id: string, dto: UpdateAlbumDto): Promise<IAlbum> {
+  async update(id: string, dto: UpdateAlbumDto): Promise<Album> {
     await this.getById(id);
-    const updatedAlbum = this.albumRepository.update(id, dto);
-    return updatedAlbum;
+    await this.albumRepository.update(id, dto);
+    return this.getById(id);
   }
 }

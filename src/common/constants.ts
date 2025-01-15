@@ -1,3 +1,7 @@
+export const ENV_PATH: string = process.env.NODE_ENV
+  ? `.env.${process.env.NODE_ENV}`
+  : '.env';
+
 export enum errorMessages {
   ALBUM_NOT_FOUND = 'Album has not been found',
   ARTIST_NOT_FOUND = 'Artist has not been found',
