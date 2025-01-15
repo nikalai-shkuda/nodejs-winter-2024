@@ -6,11 +6,16 @@ import * as swaggerUi from 'swagger-ui-express';
 import * as yaml from 'yaml';
 import * as path from 'path';
 import { AppModule } from './app.module';
+import { LoggerService } from './common/logger/logger.service';
 import { ValidationPipe } from './common/pipes/validation.pipe';
 
 async function bootstrap() {
   const PORT = process.env.PORT || 4000;
-  const app = await NestFactory.create(AppModule);
+  const logger = new LoggerService();
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+    logger,
+  });
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('RS nodejs course')
@@ -30,8 +35,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(PORT, () =>
-    console.log('Server is running on port: ' + PORT, process.env.NODE_ENV),
-  );
+  await app.listen(PORT, () => {
+    const log = `Server is running on port: ${PORT}; NODE_ENV: ${process.env.NODE_ENV}`;
+    logger.log(log);
+  });
 }
 bootstrap();
