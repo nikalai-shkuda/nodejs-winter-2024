@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AlbumsModule } from './albums/albums.module';
 import { ArtistsModule } from './artists/artists.module';
+import { AuthModule } from './auth/auth.module';
 import { ENV_PATH } from './common/constants';
 import { AllExceptionsFilter } from './common/exceptions/exception';
 import { LoggerService } from './common/logger/logger.service';
@@ -25,6 +26,7 @@ import { UsersModule } from './users/users.module';
     }),
     AlbumsModule,
     ArtistsModule,
+    AuthModule,
     FavoritesModule,
     TracksModule,
     UsersModule,
