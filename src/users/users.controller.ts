@@ -15,12 +15,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UUIDParam } from 'src/common/helpers/request.decorators';
+import { SwaggerBearerDecorator } from 'src/common/swagger/auth.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { userExample } from './mock/open.api';
 import { User } from './users.model';
 import { UsersService } from './users.service';
 
+@SwaggerBearerDecorator()
 @ApiTags('Users')
 @Controller('user')
 export class UsersController {
