@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { DEFAULT_CRYPT_SALT, errorMessages } from 'src/common/constants';
+import { JwtUserPayload } from 'src/common/types/auth';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/users.model';
@@ -14,7 +15,7 @@ export class AuthService {
   ) {}
 
   private generateToken(user: User) {
-    const payload = {
+    const payload: JwtUserPayload = {
       login: user.login,
       userId: user.id,
     };

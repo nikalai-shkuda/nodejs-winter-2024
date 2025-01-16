@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { AlbumsModule } from './albums/albums.module';
 import { ArtistsModule } from './artists/artists.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { ENV_PATH } from './common/constants';
 import { AllExceptionsFilter } from './common/exceptions/exception';
 import { LoggerService } from './common/logger/logger.service';
@@ -41,6 +42,10 @@ import { UsersModule } from './users/users.module';
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
   ],
 })

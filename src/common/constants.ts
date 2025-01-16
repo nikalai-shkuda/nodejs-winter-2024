@@ -11,6 +11,7 @@ export enum errorMessages {
   SIGNUP_SUCCESS = 'Successful signup',
   TRACK_NOT_FOUND = 'Track has not been found',
   USER_ALREADY_EXISTS = 'User already exists',
+  USER_IS_NOT_AUTHORIZED = 'User is not authorized',
   USER_NOT_FOUND = 'User has not been found',
   USER_WRONG_PASSWORD = 'Wrong password',
 }
