@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
@@ -8,6 +9,7 @@ import { AppService } from './app.service';
 import { AlbumsModule } from './albums/albums.module';
 import { ArtistsModule } from './artists/artists.module';
 import { ENV_PATH } from './common/constants';
+import { AllExceptionsFilter } from './common/exceptions/exception';
 import { LoggerService } from './common/logger/logger.service';
 import { LoggingMiddleware } from './common/logger/middleware/logger.middleware';
 import { DB_CONNECTION_OPTIONS } from './db.connection';
@@ -31,7 +33,14 @@ import { UsersModule } from './users/users.module';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, LoggerService],
+  providers: [
+    AppService,
+    LoggerService,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+  ],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
