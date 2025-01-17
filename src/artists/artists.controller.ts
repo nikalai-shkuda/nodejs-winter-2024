@@ -14,6 +14,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ROUTES } from 'src/common/constants';
 import { UUIDParam } from 'src/common/helpers/request.decorators';
 import { SwaggerBearerDecorator } from 'src/common/swagger/auth.decorator';
 import { Artist } from './artists.model';
@@ -24,7 +25,7 @@ import { IArtist } from './interfaces/artist.interface';
 
 @SwaggerBearerDecorator()
 @ApiTags('Artists')
-@Controller('artist')
+@Controller(ROUTES.ARTIST)
 export class ArtistsController {
   constructor(private artistService: ArtistsService) {}
 
