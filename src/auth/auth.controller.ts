@@ -1,21 +1,10 @@
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
-import {
-  ApiOperation,
-  ApiProperty,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { errorMessages, ROUTES } from 'src/common/constants';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
-
-class AuthResponse {
-  @ApiProperty({
-    example: 'eyJhbGciOiJIU.eyJlbWFpbCI6.45Gk3IerOV7',
-    description: 'JWT token',
-  })
-  readonly token: string;
-}
+import { CreateRefreshTokenDto } from './dto/create-refresh-token.dto';
+import { AuthResponse } from './response/auth.response';
 
 @ApiTags('Auth')
 @Controller(ROUTES.AUTH)
@@ -37,10 +26,30 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
+  @ApiOperation({ summary: 'Refresh access and refresh tokens' })
+  @ApiResponse({
+    description: errorMessages.REFRESH_SUCCESS,
+    status: HttpStatus.OK,
+    type: AuthResponse,
+  })
+  @ApiResponse({
+    description: errorMessages.REFRESH_FAIL,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  @ApiResponse({
+    description: errorMessages.REFRESH_FORBIDDEN,
+    status: HttpStatus.FORBIDDEN,
+  })
+  @Post('refresh')
+  refreshToken(@Body() CreateRefreshTokenDto: CreateRefreshTokenDto) {
+    return this.authService.refreshTokens(CreateRefreshTokenDto);
+  }
+
   @ApiOperation({ summary: 'Signup' })
   @ApiResponse({
     description: errorMessages.SIGNUP_SUCCESS,
-    status: HttpStatus.NO_CONTENT,
+    status: HttpStatus.CREATED,
+    type: AuthResponse,
   })
   @ApiResponse({
     description: 'Bad request',

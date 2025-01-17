@@ -6,6 +6,8 @@ import { JwtUserPayload } from 'src/common/types/auth';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/users.model';
+import { CreateRefreshTokenDto } from './dto/create-refresh-token.dto';
+import { AuthResponse } from './response/auth.response';
 
 @Injectable()
 export class AuthService {
@@ -19,29 +21,41 @@ export class AuthService {
       login: user.login,
       userId: user.id,
     };
-    return {
-      accessToken: this.jwtService.sign(payload),
+
+    const accessToken = this.jwtService.sign(payload);
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET_REFRESH_KEY,
+      expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
+    });
+
+    const response: AuthResponse = {
+      accessToken,
+      refreshToken,
+      id: user.id,
     };
+    return response;
   }
 
   async login(dto: CreateUserDto) {
     const user = await this.validateUser(dto);
-    return {
-      ...this.generateToken(user),
-      id: user.id,
-    };
+    return this.generateToken(user);
   }
 
   private async validateUser(dto: CreateUserDto) {
-    const user = await this.userService.getUserByLogin(dto.login);
-    const passwordEquals = await bcrypt.compare(dto.password, user.password);
-    if (user && passwordEquals) {
+    try {
+      const user = await this.userService.getUserByLogin(dto.login);
+      const passwordEquals = await bcrypt.compare(dto.password, user.password);
+      if (!user || !passwordEquals) {
+        throw new Error();
+      }
       return user;
+    } catch (error) {
+      throw new HttpException(
+        errorMessages.LOGIN_FAIL_CREDENTIAL,
+        HttpStatus.FORBIDDEN,
+        { cause: error },
+      );
     }
-    throw new HttpException(
-      errorMessages.LOGIN_FAIL_CREDENTIAL,
-      HttpStatus.FORBIDDEN,
-    );
   }
 
   async registration(dto: CreateUserDto) {
@@ -60,9 +74,30 @@ export class AuthService {
       ...dto,
       password: hashPassword,
     });
-    return {
-      ...this.generateToken(user),
-      id: user.id,
-    };
+    return this.generateToken(user);
+  }
+
+  async refreshTokens(dto: CreateRefreshTokenDto) {
+    const { refreshToken } = dto;
+    if (!refreshToken) {
+      throw new HttpException(
+        errorMessages.REFRESH_FAIL,
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: process.env.JWT_SECRET_REFRESH_KEY,
+      });
+      const user = await this.userService.getUserByLogin(payload.login);
+      return this.generateToken(user);
+    } catch (error) {
+      throw new HttpException(
+        errorMessages.REFRESH_FORBIDDEN,
+        HttpStatus.FORBIDDEN,
+        { cause: error },
+      );
+    }
   }
 }

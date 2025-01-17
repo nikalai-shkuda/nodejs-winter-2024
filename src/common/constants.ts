@@ -7,6 +7,9 @@ export enum errorMessages {
   ARTIST_NOT_FOUND = 'Artist has not been found',
   LOGIN_FAIL_CREDENTIAL = 'Incorrect login or password',
   LOGIN_SUCCESS = 'Successful login',
+  REFRESH_FAIL = 'Invalid refresh token',
+  REFRESH_FORBIDDEN = 'Refresh token is invalid or expired',
+  REFRESH_SUCCESS = 'Refresh success',
   SHOULD_NOT_BE_EMPTY = 'Field should not be empty',
   SIGNUP_SUCCESS = 'Successful signup',
   TRACK_NOT_FOUND = 'Track has not been found',
@@ -34,3 +37,5 @@ export const ROUTES = {
   TRACK: 'track',
   USER: 'user',
 };
+
+export const tokenExample = 'eyJhbGciOiJIU.eyJlbWFpbCI6.45Gk3IerOV7';
