@@ -21,10 +21,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message =
-      exception instanceof HttpException
-        ? exception.message
-        : 'Internal server error';
+    const message = exception?.message || 'Internal server error';
 
     this.loggingService.error(
       `Error occurred during request:
@@ -32,15 +29,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
        Method: ${request.method},
        Query: ${JSON.stringify(request.query)},
        Body: ${JSON.stringify(request.body)}
-       Message: ${message}`,
+       Status: ${status},
+       Message: ${exception?.stack || message}`,
     );
 
     response.status(status).json({
-      error: exception?.response?.error || 'Internal Server Error',
-      message:
-        status === HttpStatus.INTERNAL_SERVER_ERROR
-          ? 'Internal Server Error'
-          : message,
+      message,
       statusCode: status,
     });
   }
