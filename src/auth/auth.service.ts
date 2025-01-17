@@ -20,13 +20,16 @@ export class AuthService {
       userId: user.id,
     };
     return {
-      token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload),
     };
   }
 
   async login(dto: CreateUserDto) {
     const user = await this.validateUser(dto);
-    return this.generateToken(user);
+    return {
+      ...this.generateToken(user),
+      id: user.id,
+    };
   }
 
   private async validateUser(dto: CreateUserDto) {
@@ -57,6 +60,9 @@ export class AuthService {
       ...dto,
       password: hashPassword,
     });
-    return this.generateToken(user);
+    return {
+      ...this.generateToken(user),
+      id: user.id,
+    };
   }
 }

@@ -11,3 +11,14 @@ export function getTokenFromHeader(tokenString: string): string {
   }
   return token;
 }
+
+export const routeGuardMatcher = (
+  routePath: string,
+  requestPath: string,
+): boolean => {
+  if (routePath.includes('*')) {
+    const basePath = routePath.split('*')[0];
+    return requestPath.startsWith(basePath);
+  }
+  return routePath === requestPath;
+};

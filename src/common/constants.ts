@@ -25,3 +25,12 @@ export const minPasswordLength = 3;
 export const maxPasswordLength = 30;
 
 export const randomUUID = '0a35dd62-e09f-444b-a628-f4e7c6954f57';
+
+export const ROUTES = {
+  ALBUM: 'album',
+  ARTIST: 'artist',
+  AUTH: 'auth',
+  FAVORITES: 'favs',
+  TRACK: 'track',
+  USER: 'user',
+};

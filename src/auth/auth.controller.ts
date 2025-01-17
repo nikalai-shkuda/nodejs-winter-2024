@@ -5,7 +5,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { errorMessages } from 'src/common/constants';
+import { errorMessages, ROUTES } from 'src/common/constants';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 
@@ -18,7 +18,7 @@ class AuthResponse {
 }
 
 @ApiTags('Auth')
-@Controller('')
+@Controller(ROUTES.AUTH)
 export class AuthController {
   constructor(private authService: AuthService) {}
 

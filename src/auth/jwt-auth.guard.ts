@@ -7,15 +7,17 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
-import { errorMessages } from 'src/common/constants';
-import { getTokenFromHeader } from 'src/common/helpers/request.helper';
+import { errorMessages, ROUTES } from 'src/common/constants';
+import {
+  getTokenFromHeader,
+  routeGuardMatcher,
+} from 'src/common/helpers/request.helper';
 import { JwtUserPayload } from 'src/common/types/auth';
 
 const excludedRoutes = [
   { method: 'GET', path: '/' },
   { method: 'GET', path: '/api/docs*' },
-  { method: 'POST', path: '/login' },
-  { method: 'POST', path: '/signup' },
+  { method: 'POST', path: `/${ROUTES.AUTH}/*` },
 ];
 
 @Injectable()
@@ -29,7 +31,8 @@ export class JwtAuthGuard implements CanActivate {
       const request = context.switchToHttp().getRequest();
       const isExcluded = excludedRoutes.some(
         (route) =>
-          route.method === request.method && route.path === request.url,
+          route.method === request.method &&
+          routeGuardMatcher(route.path, request.url),
       );
 
       if (isExcluded) {
