@@ -1,5 +1,5 @@
 import { ConsoleLogger, Injectable, LogLevel } from '@nestjs/common';
-import * as fs from 'fs';
+import { promises as fs } from 'fs';
 import * as path from 'path';
 
 const BYTE_IN_KB: number = 1024;
@@ -11,9 +11,6 @@ const DEFAULT_LOG_ERRORS_FILE_NAME: string = 'errors.0.log';
 
 const LOG_ALL_FILE_PREFIX: string = 'all';
 const LOG_ERRORS_FILE_PREFIX: string = 'errors';
-
-let LOG_ALL_FILE_NAME: string = DEFAULT_LOG_ALL_FILE_NAME;
-let LOG_ERRORS_FILE_NAME: string = DEFAULT_LOG_ERRORS_FILE_NAME;
 
 enum LOG_LEVELS {
   error = 0,
@@ -31,6 +28,8 @@ enum LOG_TYPES {
 @Injectable()
 export class LoggerService extends ConsoleLogger {
   private logDirectory: string;
+  private logAllFileName: string = DEFAULT_LOG_ALL_FILE_NAME;
+  private logErrorsFileName: string = DEFAULT_LOG_ERRORS_FILE_NAME;
   private logLevel: number;
   private maxFileSize: number;
 
@@ -45,35 +44,36 @@ export class LoggerService extends ConsoleLogger {
     this.initLogFiles();
   }
 
-  private getLastFile(prefix: string): string {
-    const files = fs
-      .readdirSync(this.logDirectory)
-      .filter((file) => file.startsWith(prefix) && file.endsWith('.log'))
-      .sort((a, b) => {
-        const aIndex = parseInt(a.split('.')[1]) || 0;
-        const bIndex = parseInt(b.split('.')[1]) || 0;
-        return aIndex - bIndex;
-      });
+  private async getLastFile(prefix: string): Promise<string | null> {
+    try {
+      const files = (await fs.readdir(this.logDirectory))
+        .filter((file) => file.startsWith(prefix) && file.endsWith('.log'))
+        .sort((a, b) => {
+          const aIndex = parseInt(a.split('.')[1]) || 0;
+          const bIndex = parseInt(b.split('.')[1]) || 0;
+          return aIndex - bIndex;
+        });
 
-    return files.at(-1) || null;
+      return files.at(-1) || null;
+    } catch {
+      return null;
+    }
   }
 
-  private initLogFiles(): void {
-    if (!fs.existsSync(this.logDirectory)) {
-      fs.mkdirSync(this.logDirectory, { recursive: true });
+  private async initLogFiles(): Promise<void> {
+    try {
+      await fs.mkdir(this.logDirectory, { recursive: true });
+
+      const [lastAllFile, lastErrorsFile] = await Promise.all([
+        this.getLastFile(LOG_ALL_FILE_PREFIX),
+        this.getLastFile(LOG_ERRORS_FILE_PREFIX),
+      ]);
+
+      this.logAllFileName = lastAllFile || DEFAULT_LOG_ALL_FILE_NAME;
+      this.logErrorsFileName = lastErrorsFile || DEFAULT_LOG_ERRORS_FILE_NAME;
+    } catch (error) {
+      this.error('Failed to initialize log files', error.stack);
     }
-
-    LOG_ALL_FILE_NAME =
-      this.getLastFile(LOG_ALL_FILE_PREFIX) || DEFAULT_LOG_ALL_FILE_NAME;
-    LOG_ERRORS_FILE_NAME =
-      this.getLastFile(LOG_ERRORS_FILE_PREFIX) || DEFAULT_LOG_ERRORS_FILE_NAME;
-
-    [LOG_ALL_FILE_NAME, LOG_ERRORS_FILE_NAME].forEach((fileName) => {
-      const filePath = path.join(this.logDirectory, fileName);
-      if (!fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, '');
-      }
-    });
   }
 
   log(message: string, context: string = ''): void {
@@ -120,36 +120,45 @@ export class LoggerService extends ConsoleLogger {
   private shouldLog(level: LogLevel): boolean {
     return LOG_LEVELS[level] <= this.logLevel;
   }
-  private rotateLogFiles(fileName: string): string {
-    const filePath = path.join(this.logDirectory, fileName);
 
-    if (
-      fs.existsSync(filePath) &&
-      fs.statSync(filePath).size >= this.maxFileSize
-    ) {
+  private async getRotateNameLogFile(fileName: string): Promise<string> {
+    try {
+      const filePath = path.join(this.logDirectory, fileName);
+      const stats = await fs.stat(filePath);
+
+      if (stats.size < this.maxFileSize) {
+        return fileName;
+      }
+
       const [name, version, extension] = fileName.split('.');
       const newVersion = Number(version) + 1;
       const newFileName = `${name}.${newVersion}.${extension}`;
-      const newFilePath = path.join(this.logDirectory, newFileName);
-
-      fs.writeFileSync(newFilePath, '');
       return newFileName;
+    } catch {
+      return fileName;
     }
-    return fileName;
   }
-  private writeToFile(fileType: LOG_TYPES, content: string): void {
-    const logMessage = `${new Date().toISOString()} - ${content}\n`;
-    let fileName = LOG_ALL_FILE_NAME;
+
+  private async writeToFile(
+    fileType: LOG_TYPES,
+    content: string,
+  ): Promise<void> {
+    let fileName = this.logAllFileName;
 
     if (fileType === LOG_TYPES.all) {
-      fileName = this.rotateLogFiles(LOG_ALL_FILE_NAME);
-      LOG_ALL_FILE_NAME = fileName;
+      fileName = await this.getRotateNameLogFile(this.logAllFileName);
+      this.logAllFileName = fileName;
     } else if (fileType === LOG_TYPES.errors) {
-      fileName = this.rotateLogFiles(LOG_ERRORS_FILE_NAME);
-      LOG_ERRORS_FILE_NAME = fileName;
+      fileName = await this.getRotateNameLogFile(this.logErrorsFileName);
+      this.logErrorsFileName = fileName;
     }
 
-    const filePath = path.join(this.logDirectory, fileName);
-    fs.appendFileSync(filePath, logMessage);
+    try {
+      const filePath = path.join(this.logDirectory, fileName);
+      const logMessage = `${new Date().toISOString()} - ${content}\n`;
+      fs.appendFile(filePath, logMessage);
+    } catch (error) {
+      this.error('Failed to write to log file', error.stack);
+    }
   }
 }
