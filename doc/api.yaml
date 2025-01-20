@@ -117,10 +117,10 @@ security:
   - bearerAuth: []
 
 paths:
-  /login:
+  /auth/login:
     post:
       tags:
-        - Login
+        - Auth
       security: []
       summary: Login
       description: Logins a user and returns a JWT-token
@@ -152,12 +152,14 @@ paths:
                   token:
                     type: string
                 description: JWT Token
+        400:
+          description: Bad request
         403:
           description: Incorrect login or password
-  /signup:
+  /auth/signup:
     post:
       tags:
-        - Signup
+        - Auth
       security: []
       summary: Signup
       description: Signup a user
@@ -183,12 +185,39 @@ paths:
                 - login
                 - password
       responses:
-        204:
+        201:
           description: Successful signup
         400:
           description: Bad request
         409:
           description: Conflict. Login already exists
+  /auth/refresh:
+    post:
+      tags:
+        - Auth
+      security: []
+      summary: Refresh
+      description: Refresh access and refresh tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: example
+              properties:
+                refreshToken:
+                  type: string
+                  description: Refresh token
+              required:
+                - refreshToken
+      responses:
+        200:
+          description: Successful refresh
+        400:
+          description: Bad request
+        403:
+          description: Incorrect refresh token
   /user:
     get:
       tags:
