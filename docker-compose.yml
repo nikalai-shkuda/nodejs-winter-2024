@@ -11,6 +11,7 @@ services:
     volumes:
       - ./src:/app/src
       - /app/node_modules
+      - server_logs:/app/logs
     ports:
       - 4000:4000
       - 9229:9229
@@ -41,6 +42,7 @@ services:
 volumes:
   pg_data:
   pg_logs:
+  server_logs:
 
 
 networks:
