@@ -9,7 +9,7 @@ import { AppService } from './app.service';
 import { AlbumsModule } from './albums/albums.module';
 import { ArtistsModule } from './artists/artists.module';
 import { AuthModule } from './auth/auth.module';
-import { ENV_PATH } from './common/constants';
+import { appConstants } from './common/config';
 import { AllExceptionsFilter } from './common/exceptions/exception';
 import { LoggerService } from './common/logger/logger.service';
 import { LoggingMiddleware } from './common/logger/middleware/logger.middleware';
@@ -21,7 +21,7 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ENV_PATH,
+      envFilePath: appConstants.ENV_PATH,
       isGlobal: true,
     }),
     AlbumsModule,

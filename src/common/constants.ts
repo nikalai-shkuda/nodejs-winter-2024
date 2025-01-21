@@ -1,7 +1,3 @@
-export const ENV_PATH: string = process.env.NODE_ENV
-  ? `.env.${process.env.NODE_ENV}`
-  : '.env';
-
 export enum errorMessages {
   ALBUM_NOT_FOUND = 'Album has not been found',
   ARTIST_NOT_FOUND = 'Artist has not been found',
@@ -18,8 +14,6 @@ export enum errorMessages {
   USER_NOT_FOUND = 'User has not been found',
   USER_WRONG_PASSWORD = 'Wrong password',
 }
-
-export const DEFAULT_CRYPT_SALT = 5;
 
 export const minLoginLength = 3;
 export const maxLoginLength = 255;

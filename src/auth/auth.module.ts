@@ -3,6 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { jwtConstants } from 'src/common/config';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { UsersModule } from 'src/users/users.module';
 
@@ -18,9 +19,9 @@ import { UsersModule } from 'src/users/users.module';
   imports: [
     UsersModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET_KEY || 'SECRET',
+      secret: jwtConstants.ACCESS_SECRET,
       signOptions: {
-        expiresIn: process.env.TOKEN_EXPIRE_TIME || '12h',
+        expiresIn: jwtConstants.ACCESS_EXPIRES_IN,
       },
     }),
   ],

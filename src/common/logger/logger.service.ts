@@ -1,10 +1,9 @@
 import { ConsoleLogger, Injectable, LogLevel } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+import { logsConstants } from '../config';
 
 const BYTE_IN_KB: number = 1024;
-const DEF_LOG_MAX_SIZE_KB: number = 100;
-const DEF_LOG_LEVEL: number = 4;
 
 const DEFAULT_LOG_ALL_FILE_NAME: string = 'all.0.log';
 const DEFAULT_LOG_ERRORS_FILE_NAME: string = 'errors.0.log';
@@ -37,9 +36,8 @@ export class LoggerService extends ConsoleLogger {
     super();
 
     this.logDirectory = path.join(__dirname, '../../..', 'logs');
-    this.logLevel = Number(process.env.LOG_LEVEL || DEF_LOG_LEVEL);
-    this.maxFileSize =
-      Number(process.env.LOG_MAX_SIZE_KB || DEF_LOG_MAX_SIZE_KB) * BYTE_IN_KB;
+    this.logLevel = logsConstants.LOG_LEVEL;
+    this.maxFileSize = logsConstants.LOG_MAX_SIZE_KB * BYTE_IN_KB;
 
     this.initLogFiles();
   }
