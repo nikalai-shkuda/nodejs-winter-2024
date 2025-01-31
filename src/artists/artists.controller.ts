@@ -14,15 +14,18 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ROUTES } from 'src/common/constants';
 import { UUIDParam } from 'src/common/helpers/request.decorators';
+import { SwaggerBearerDecorator } from 'src/common/swagger/auth.decorator';
 import { Artist } from './artists.model';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { IArtist } from './interfaces/artist.interface';
 
+@SwaggerBearerDecorator()
 @ApiTags('Artists')
-@Controller('artist')
+@Controller(ROUTES.ARTIST)
 export class ArtistsController {
   constructor(private artistService: ArtistsService) {}
 

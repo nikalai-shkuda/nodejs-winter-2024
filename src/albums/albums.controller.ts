@@ -14,15 +14,18 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ROUTES } from 'src/common/constants';
 import { UUIDParam } from 'src/common/helpers/request.decorators';
+import { SwaggerBearerDecorator } from 'src/common/swagger/auth.decorator';
 import { Album } from './albums.model';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { IAlbum } from './interfaces/album.interface';
 
+@SwaggerBearerDecorator()
 @ApiTags('Albums')
-@Controller('album')
+@Controller(ROUTES.ALBUM)
 export class AlbumsController {
   constructor(private albumService: AlbumsService) {}
 

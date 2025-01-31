@@ -5,12 +5,15 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - .env.docker
+      - .env.development
+    environment:
+      POSTGRES_HOST: db
     volumes:
       - ./src:/app/src
       - /app/node_modules
+      - server_logs:/app/logs
     ports:
-      - 4000:5050
+      - 4000:4000
       - 9229:9229
     command: npm run start:migrate:dev
     depends_on:
@@ -25,7 +28,7 @@ services:
       context: .
       dockerfile: Dockerfile.postgres
     env_file:
-      - .env.docker
+      - .env.development
     ports:
       - 5433:5432
       - 5432:5432
@@ -39,6 +42,7 @@ services:
 volumes:
   pg_data:
   pg_logs:
+  server_logs:
 
 
 networks:

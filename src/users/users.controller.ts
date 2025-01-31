@@ -14,15 +14,18 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ROUTES } from 'src/common/constants';
 import { UUIDParam } from 'src/common/helpers/request.decorators';
+import { SwaggerBearerDecorator } from 'src/common/swagger/auth.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { userExample } from './mock/open.api';
 import { User } from './users.model';
 import { UsersService } from './users.service';
 
+@SwaggerBearerDecorator()
 @ApiTags('Users')
-@Controller('user')
+@Controller(ROUTES.USER)
 export class UsersController {
   constructor(private userService: UsersService) {}
 

@@ -18,15 +18,17 @@ import {
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { randomUUID } from 'src/common/constants';
+import { randomUUID, ROUTES } from 'src/common/constants';
 import { UUIDParam } from 'src/common/helpers/request.decorators';
+import { SwaggerBearerDecorator } from 'src/common/swagger/auth.decorator';
 import { Favorites } from './favorites.model';
 import { FavoritesService } from './favorites.service';
 import { favoritesExample } from './mock/open.api';
 import { FavoutitesEntityType } from './types/entity.types';
 
+@SwaggerBearerDecorator()
 @ApiTags('Favorites')
-@Controller('favs')
+@Controller(ROUTES.FAVORITES)
 export class FavoritesController {
   constructor(private favoritesService: FavoritesService) {}
 

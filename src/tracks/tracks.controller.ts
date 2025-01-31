@@ -14,15 +14,18 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ROUTES } from 'src/common/constants';
 import { UUIDParam } from 'src/common/helpers/request.decorators';
+import { SwaggerBearerDecorator } from 'src/common/swagger/auth.decorator';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { ITrack } from './interfaces/track.interface';
 import { Track } from './tracks.model';
 import { TracksService } from './tracks.service';
 
+@SwaggerBearerDecorator()
 @ApiTags('Tracks')
-@Controller('track')
+@Controller(ROUTES.TRACK)
 export class TracksController {
   constructor(private trackService: TracksService) {}
 
