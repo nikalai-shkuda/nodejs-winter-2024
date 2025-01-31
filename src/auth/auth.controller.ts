@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { errorMessages, ROUTES } from 'src/common/constants';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
@@ -40,6 +40,7 @@ export class AuthController {
     description: errorMessages.REFRESH_FORBIDDEN,
     status: HttpStatus.FORBIDDEN,
   })
+  @HttpCode(HttpStatus.OK)
   @Post('refresh')
   refreshToken(@Body() CreateRefreshTokenDto: CreateRefreshTokenDto) {
     return this.authService.refreshTokens(CreateRefreshTokenDto);
